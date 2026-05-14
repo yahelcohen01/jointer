@@ -9,10 +9,12 @@ You need to do this once after slice 3 (auth) lands. Until it's done, sign-in wo
 3. Save the **database password** somewhere safe.
 4. Wait ~2 minutes for provisioning.
 
-In **Project Settings → API**, copy:
+In **Project Settings → API Keys** (new key model — `sb_publishable_*` / `sb_secret_*`, not the legacy anon/service_role JWTs):
 - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-- **Project API keys → anon public** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- **Project API keys → service_role secret** → `SUPABASE_SERVICE_ROLE_KEY`
+- **Publishable key** (`sb_publishable_...`) → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- **Secret key** (`sb_secret_...`) → `SUPABASE_SECRET_KEY`
+
+> If your project still shows only the legacy "anon / service_role" keys, click **API Keys → New API Keys** to generate the publishable + secret pair. The legacy keys still work but are deprecated.
 
 ## 2. Local env vars
 
@@ -77,8 +79,8 @@ Without correct Redirect URLs, OAuth and magic-link callbacks will be rejected.
 In the Vercel dashboard → your project → **Settings → Environment Variables**, add the same three vars from step 1:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY`
 
 Plus `NEXT_PUBLIC_SITE_URL=https://jointer.co` (or your production domain).
 
