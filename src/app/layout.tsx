@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Assistant, Heebo, Rubik } from "next/font/google";
+import { headers } from "next/headers";
+import { defaultLocale, dirFor, isLocale, type Locale } from "@/lib/i18n";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -25,15 +27,24 @@ export const metadata: Metadata = {
   description: "Link-in-bio for Israeli creators.",
 };
 
-export default function RootLayout({
+function localeFromPathname(pathname: string): Locale {
+  const segment = pathname.split("/")[1] ?? "";
+  return isLocale(segment) ? segment : defaultLocale;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const h = await headers();
+  const pathname = h.get("x-pathname") ?? "/";
+  const locale = localeFromPathname(pathname);
+
   return (
     <html
-      lang="he"
-      dir="rtl"
+      lang={locale}
+      dir={dirFor(locale)}
       data-theme="sunrise"
       className={`${heebo.variable} ${rubik.variable} ${assistant.variable} h-full antialiased`}
     >

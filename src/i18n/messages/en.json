@@ -1,0 +1,14 @@
+{
+  "Marketing": {
+    "hero": {
+      "title": "Jointer",
+      "tagline": "One link for everything you do. Hebrew-native, Bit and PayBox built in.",
+      "cta": "Get started"
+    },
+    "localeSwitcher": {
+      "label": "Language",
+      "he": "עברית",
+      "en": "English"
+    }
+  }
+}

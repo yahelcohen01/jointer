@@ -16,7 +16,13 @@ export function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
 
   if (isAppHost(host)) {
-    return NextResponse.next();
+    // Forward the pathname as a header so server components (root layout,
+    // next-intl request config) can read it without their own URL parsing.
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-pathname", request.nextUrl.pathname);
+    return NextResponse.next({
+      request: { headers: requestHeaders },
+    });
   }
 
   // Phase 3 stub: this is where custom-domain lookup will live
