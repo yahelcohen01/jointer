@@ -7,6 +7,7 @@ import {
 } from "@/components/profile/ProfileView";
 import { getByUsername } from "@/lib/db/profiles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getTheme } from "@/lib/themes";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -61,5 +62,14 @@ export default async function UsernamePage({ params }: Props) {
       icon: link.icon,
     }));
 
-  return <ProfileView profile={viewProfile} links={viewLinks} />;
+  const theme = getTheme(profile.theme_id);
+
+  return (
+    <div
+      data-theme={theme.id}
+      className="min-h-full flex-1 flex flex-col bg-background text-foreground"
+    >
+      <ProfileView profile={viewProfile} links={viewLinks} />
+    </div>
+  );
 }

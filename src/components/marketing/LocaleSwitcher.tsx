@@ -1,12 +1,13 @@
-import { headers } from "next/headers";
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { setLocaleAction } from "@/lib/actions/setLocale";
 import { locales } from "@/lib/i18n";
 
-export async function LocaleSwitcher() {
-  const t = await getTranslations("Marketing.localeSwitcher");
-  const h = await headers();
-  const pathname = h.get("x-pathname") ?? "/";
+export function LocaleSwitcher() {
+  const t = useTranslations("Marketing.localeSwitcher");
+  const pathname = usePathname();
 
   return (
     <form

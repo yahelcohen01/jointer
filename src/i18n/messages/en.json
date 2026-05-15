@@ -109,9 +109,52 @@
         "checking": "Checking availability…"
       }
     },
+    "niche": {
+      "title": "What best describes you?",
+      "subtitle": "Pick the niche that fits — we'll use this to tune defaults.",
+      "submit": "Continue",
+      "submitting": "Saving…",
+      "options": {
+        "creator": "Creator",
+        "musician": "Musician",
+        "business": "Business",
+        "restaurant": "Restaurant",
+        "other": "Something else"
+      },
+      "errors": {
+        "invalid_input": "Pick one of the options.",
+        "unauthenticated": "Please log in again",
+        "other": "Something went wrong. Try again."
+      }
+    },
+    "theme": {
+      "title": "Pick a starter theme",
+      "subtitle": "You can change this later from your dashboard.",
+      "submit": "Use this theme",
+      "submitting": "Saving…",
+      "themes": {
+        "sunrise": {
+          "name": "Sunrise",
+          "description": "Warm cream and amber — the friendly default."
+        },
+        "noir": {
+          "name": "Noir",
+          "description": "Deep blacks with a single accent — confident and quiet."
+        },
+        "terminal": {
+          "name": "Terminal",
+          "description": "Monospaced green-on-black, for the technically inclined."
+        }
+      },
+      "errors": {
+        "invalid_input": "Pick a theme.",
+        "unauthenticated": "Please log in again",
+        "other": "Something went wrong. Try again."
+      }
+    },
     "placeholderStep": {
       "title": "Onboarding — {step}",
-      "body": "This step will be implemented in slice 5."
+      "body": "This step is coming soon."
     }
   }
 }

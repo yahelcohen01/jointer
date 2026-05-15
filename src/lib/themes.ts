@@ -1,4 +1,4 @@
-export type ThemeId = "sunrise";
+export type ThemeId = "sunrise" | "noir" | "terminal";
 
 export interface Theme {
   id: ThemeId;
@@ -14,7 +14,21 @@ export const themes: Record<ThemeId, Theme> = {
     description: "Warm cream and amber — the friendly default.",
     previewSwatches: ["#fff7ed", "#fed7aa", "#ea580c", "#7c2d12"],
   },
+  noir: {
+    id: "noir",
+    name: "Noir",
+    description: "Deep blacks with a single accent — confident and quiet.",
+    previewSwatches: ["#0a0a0a", "#1f1f1f", "#fafafa", "#a78bfa"],
+  },
+  terminal: {
+    id: "terminal",
+    name: "Terminal",
+    description: "Monospaced green-on-black, for the technically inclined.",
+    previewSwatches: ["#020a02", "#0a1f0a", "#7ee787", "#56d364"],
+  },
 };
+
+export const themeIds = Object.keys(themes) as ThemeId[];
 
 export const defaultThemeId: ThemeId = "sunrise";
 
