@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function LogoutButton() {
+  const t = useTranslations("Auth.logout");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -24,7 +26,7 @@ export function LogoutButton() {
       disabled={pending}
       className="text-sm underline hover:text-foreground disabled:opacity-50"
     >
-      {pending ? "מתנתק…" : "התנתק"}
+      {pending ? t("pending") : t("button")}
     </button>
   );
 }

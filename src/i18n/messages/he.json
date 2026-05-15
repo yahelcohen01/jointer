@@ -73,7 +73,19 @@
         "mismatch": "הסיסמאות לא תואמות.",
         "saveFailed": "שמירת הסיסמה נכשלה. נסו שוב."
       }
+    },
+    "logout": {
+      "button": "התנתק",
+      "pending": "מתנתק…"
     }
+  },
+  "Dashboard": {
+    "greeting": "שלום, {name}",
+    "placeholderBody": "לוח הבקרה האמיתי בא בפרוסה 4."
+  },
+  "Metadata": {
+    "title": "Jointer",
+    "description": "קישור אחד לכל מה שאתם עושים. נבנה ליוצרים, עם תשלום בביט ופייבוקס מובנה."
   },
   "Onboarding": {
     "username": {

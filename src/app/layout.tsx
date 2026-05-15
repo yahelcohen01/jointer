@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Assistant, Heebo, Rubik } from "next/font/google";
 import { headers } from "next/headers";
 import { defaultLocale, dirFor, isLocale, type Locale } from "@/lib/i18n";
@@ -21,11 +20,6 @@ const assistant = Assistant({
   subsets: ["hebrew", "latin"],
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: "Jointer",
-  description: "Link-in-bio for Israeli creators.",
-};
 
 function localeFromPathname(pathname: string): Locale {
   const segment = pathname.split("/")[1] ?? "";

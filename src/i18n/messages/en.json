@@ -73,7 +73,19 @@
         "mismatch": "Passwords don't match.",
         "saveFailed": "Failed to save password. Try again."
       }
+    },
+    "logout": {
+      "button": "Log out",
+      "pending": "Logging out…"
     }
+  },
+  "Dashboard": {
+    "greeting": "Hello, {name}",
+    "placeholderBody": "The real dashboard ships in slice 4."
+  },
+  "Metadata": {
+    "title": "Jointer",
+    "description": "One link for everything you do. Built for creators, with Bit and PayBox tipping out of the box."
   },
   "Onboarding": {
     "username": {

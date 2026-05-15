@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -26,11 +27,15 @@ export default async function DashboardPage() {
     redirect("/onboarding/username");
   }
 
+  const t = await getTranslations("Dashboard");
+
   return (
     <main className="mx-auto max-w-md flex-1 px-4 py-16 flex flex-col items-center text-center gap-3">
-      <h1 className="text-3xl font-bold font-display">שלום, {profile.display_name}</h1>
+      <h1 className="text-3xl font-bold font-display">
+        {t("greeting", { name: profile.display_name })}
+      </h1>
       <p className="text-muted-foreground">@{profile.username}</p>
-      <p className="text-sm text-muted-foreground">לוח הבקרה האמיתי בא בפרוסה 4.</p>
+      <p className="text-sm text-muted-foreground">{t("placeholderBody")}</p>
     </main>
   );
 }
