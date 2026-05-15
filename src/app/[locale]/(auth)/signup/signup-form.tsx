@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import {
   checkSignupAvailability,
@@ -13,6 +14,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 type Stage = "email" | "credentials" | "confirm_email" | "linking_email";
 
 export function SignupForm() {
+  const t = useTranslations("Auth.signup");
+  const tErr = useTranslations("Auth.signup.errors");
   const router = useRouter();
   const [stage, setStage] = useState<Stage>("email");
   const [email, setEmail] = useState("");
@@ -28,17 +31,17 @@ export function SignupForm() {
     startTransition(async () => {
       const availability = await checkSignupAvailability(email);
       if (!availability.success) {
-        setError("שגיאה בבדיקת האימייל. נסו שוב.");
+        setError(tErr("checkFailed"));
         return;
       }
       if (availability.data.state === "already_registered") {
-        setError("האימייל הזה כבר רשום. נסו להתחבר.");
+        setError(tErr("alreadyRegistered"));
         return;
       }
       if (availability.data.state === "needs_linking") {
         const sent = await sendPasswordSetupLink(email);
         if (!sent.success) {
-          setError("נכשל בשליחת הקישור. נסו שוב.");
+          setError(tErr("sendLinkFailed"));
           return;
         }
         setStage("linking_email");
@@ -52,11 +55,11 @@ export function SignupForm() {
     e.preventDefault();
     setError(null);
     if (!fullName.trim()) {
-      setError("חסר שם.");
+      setError(tErr("nameRequired"));
       return;
     }
     if (password.length < 6) {
-      setError("סיסמה חייבת להיות לפחות 6 תווים.");
+      setError(tErr("passwordTooShort"));
       return;
     }
     startTransition(async () => {
@@ -69,17 +72,17 @@ export function SignupForm() {
         },
       });
       if (signUpError) {
-        setError(signUpError.message ?? "ההרשמה נכשלה. נסו שוב.");
+        setError(signUpError.message ?? tErr("signupFailed"));
         return;
       }
       const authUser = data.user;
       if (!authUser) {
-        setError("ההרשמה נכשלה. נסו שוב.");
+        setError(tErr("signupFailed"));
         return;
       }
       const result = await createUserProfile(authUser.id, fullName);
       if (!result.success) {
-        setError("נכשל ביצירת הפרופיל. צרו קשר עם התמיכה.");
+        setError(tErr("profileCreateFailed"));
         return;
       }
       if (data.session) {
@@ -104,28 +107,34 @@ export function SignupForm() {
   }
 
   if (stage === "confirm_email") {
+    const tConfirm = t.raw("confirmEmail") as {
+      title: string;
+      body: string;
+      backToLogin: string;
+    };
     return (
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="text-lg font-medium">בדקו את האימייל שלכם 📬</p>
-        <p className="text-sm text-muted-foreground">
-          שלחנו אליכם קישור לאימות. אחרי שתאמתו, אתם תועברו אוטומטית להמשך.
-        </p>
+        <p className="text-lg font-medium">{tConfirm.title}</p>
+        <p className="text-sm text-muted-foreground">{tConfirm.body}</p>
         <Link href="/login" className="text-sm underline hover:text-foreground">
-          חזרה להתחברות
+          {tConfirm.backToLogin}
         </Link>
       </div>
     );
   }
 
   if (stage === "linking_email") {
+    const tLink = t.raw("linkingEmail") as {
+      title: string;
+      body: string;
+      backToLogin: string;
+    };
     return (
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="text-lg font-medium">מצאנו חשבון Google בכתובת הזו 🔗</p>
-        <p className="text-sm text-muted-foreground">
-          שלחנו אליכם קישור התחברות. אחרי שתלחצו עליו, תוכלו להגדיר סיסמה ולהתחבר גם איתה.
-        </p>
+        <p className="text-lg font-medium">{tLink.title}</p>
+        <p className="text-sm text-muted-foreground">{tLink.body}</p>
         <Link href="/login" className="text-sm underline hover:text-foreground">
-          חזרה להתחברות
+          {tLink.backToLogin}
         </Link>
       </div>
     );
@@ -135,14 +144,18 @@ export function SignupForm() {
     return (
       <form onSubmit={handleCredentialsSubmit} className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground text-center">
-          ממשיכים להרשמה בכתובת{" "}
-          <span dir="ltr" className="font-mono">
-            {email}
-          </span>
+          {t.rich("continuingAt", {
+            address: email,
+            email: (chunks) => (
+              <span dir="ltr" className="font-mono">
+                {chunks}
+              </span>
+            ),
+          })}
         </p>
 
         <label htmlFor="full-name" className="text-sm font-medium text-start">
-          שם
+          {t("nameLabel")}
         </label>
         <input
           id="full-name"
@@ -156,7 +169,7 @@ export function SignupForm() {
         />
 
         <label htmlFor="password" className="text-sm font-medium text-start">
-          סיסמה (לפחות 6 תווים)
+          {t("passwordLabel")}
         </label>
         <input
           id="password"
@@ -175,7 +188,7 @@ export function SignupForm() {
           disabled={pending || !fullName || !password}
           className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
         >
-          {pending ? "יוצר חשבון…" : "צרו חשבון"}
+          {pending ? t("creating") : t("createAccount")}
         </button>
 
         {error ? <p className="text-sm text-destructive text-center">{error}</p> : null}
@@ -188,7 +201,7 @@ export function SignupForm() {
           }}
           className="text-sm text-muted-foreground underline hover:text-foreground"
         >
-          שינוי כתובת אימייל
+          {t("changeEmail")}
         </button>
       </form>
     );
@@ -203,18 +216,18 @@ export function SignupForm() {
         disabled={pending}
         className="w-full rounded-lg border border-border bg-background text-foreground px-4 py-3 font-medium hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
       >
-        הירשמו עם Google
+        {t("googleCta")}
       </button>
 
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <div className="flex-1 h-px bg-border" />
-        <span>או</span>
+        <span>{t("or")}</span>
         <div className="flex-1 h-px bg-border" />
       </div>
 
       <form onSubmit={handleEmailSubmit} className="flex flex-col gap-3">
         <label htmlFor="email" className="text-sm font-medium text-start">
-          אימייל
+          {t("emailLabel")}
         </label>
         <input
           id="email"
@@ -233,15 +246,15 @@ export function SignupForm() {
           disabled={pending || !email}
           className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
         >
-          {pending ? "בודק…" : "המשך"}
+          {pending ? t("checking") : t("continue")}
         </button>
 
         {error ? <p className="text-sm text-destructive text-center">{error}</p> : null}
 
         <p className="text-sm text-center text-muted-foreground">
-          כבר יש לכם חשבון?{" "}
+          {t("haveAccount")}{" "}
           <Link href="/login" className="underline hover:text-foreground">
-            התחברו
+            {t("loginLink")}
           </Link>
         </p>
       </form>

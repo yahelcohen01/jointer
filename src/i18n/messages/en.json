@@ -2,13 +2,104 @@
   "Marketing": {
     "hero": {
       "title": "Jointer",
-      "tagline": "One link for everything you do. Hebrew-native, Bit and PayBox built in.",
+      "tagline": "One link for everything you do. Bit and PayBox built in.",
       "cta": "Get started"
     },
     "localeSwitcher": {
       "label": "Language",
       "he": "עברית",
       "en": "English"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Log in",
+      "subtitle": "Welcome back! Sign in with your email and password.",
+      "googleCta": "Continue with Google",
+      "or": "or",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "submitting": "Signing in…",
+      "invalidCredentials": "Invalid login details. Try again.",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up"
+    },
+    "signup": {
+      "title": "Sign up",
+      "subtitle": "Create your account in seconds.",
+      "googleCta": "Sign up with Google",
+      "or": "or",
+      "emailLabel": "Email",
+      "nameLabel": "Name",
+      "passwordLabel": "Password (at least 6 characters)",
+      "continue": "Continue",
+      "checking": "Checking…",
+      "createAccount": "Create account",
+      "creating": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "changeEmail": "Change email address",
+      "continuingAt": "Continuing signup with <email>{address}</email>",
+      "errors": {
+        "checkFailed": "Error checking the email. Try again.",
+        "alreadyRegistered": "This email is already registered. Try logging in.",
+        "sendLinkFailed": "Failed to send the link. Try again.",
+        "nameRequired": "Name is required.",
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "signupFailed": "Sign up failed. Try again.",
+        "profileCreateFailed": "Failed to create your profile. Please contact support."
+      },
+      "confirmEmail": {
+        "title": "Check your email 📬",
+        "body": "We sent you a verification link. Once you confirm, you'll be redirected automatically.",
+        "backToLogin": "Back to login"
+      },
+      "linkingEmail": {
+        "title": "We found a Google account at this address 🔗",
+        "body": "We sent you a sign-in link. After clicking it, you'll be able to set a password and log in with either method.",
+        "backToLogin": "Back to login"
+      }
+    },
+    "setPassword": {
+      "title": "Set password",
+      "subtitle": "Set a password for your account — you'll be able to sign in with it in addition to Google.",
+      "newPasswordLabel": "New password (at least 6 characters)",
+      "confirmLabel": "Confirm password",
+      "submit": "Save password",
+      "submitting": "Saving…",
+      "errors": {
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "mismatch": "Passwords don't match.",
+        "saveFailed": "Failed to save password. Try again."
+      }
+    }
+  },
+  "Onboarding": {
+    "username": {
+      "title": "Pick a username",
+      "subtitle": "This is the URL you'll share with your followers.",
+      "label": "Username",
+      "submit": "Continue",
+      "submitting": "Saving…",
+      "available": "Available ✓",
+      "errors": {
+        "too_short": "Too short (minimum 3 characters)",
+        "too_long": "Too long (maximum 30 characters)",
+        "invalid_chars": "Allowed: a–z, 0–9, hyphen, and underscore",
+        "leading_or_trailing_separator": "Cannot start or end with hyphen or underscore",
+        "reserved": "Username is reserved",
+        "taken": "Username is taken",
+        "unauthorized": "Not authorized. Try logging in again.",
+        "unauthenticated": "Please log in again",
+        "invalid_input": "Invalid input",
+        "other": "Something went wrong. Try again.",
+        "checking": "Checking availability…"
+      }
+    },
+    "placeholderStep": {
+      "title": "Onboarding — {step}",
+      "body": "This step will be implemented in slice 5."
     }
   }
 }

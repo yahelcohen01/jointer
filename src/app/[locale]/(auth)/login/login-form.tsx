@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
+  const t = useTranslations("Auth.login");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ export function LoginForm() {
       const supabase = createSupabaseBrowserClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) {
-        setError("פרטי ההתחברות שגויים. נסו שוב.");
+        setError(t("invalidCredentials"));
         return;
       }
       router.push("/dashboard");
@@ -47,18 +49,18 @@ export function LoginForm() {
         disabled={pending}
         className="w-full rounded-lg border border-border bg-background text-foreground px-4 py-3 font-medium hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
       >
-        התחברו עם Google
+        {t("googleCta")}
       </button>
 
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <div className="flex-1 h-px bg-border" />
-        <span>או</span>
+        <span>{t("or")}</span>
         <div className="flex-1 h-px bg-border" />
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label htmlFor="email" className="text-sm font-medium text-start">
-          אימייל
+          {t("emailLabel")}
         </label>
         <input
           id="email"
@@ -73,7 +75,7 @@ export function LoginForm() {
         />
 
         <label htmlFor="password" className="text-sm font-medium text-start">
-          סיסמה
+          {t("passwordLabel")}
         </label>
         <input
           id="password"
@@ -91,15 +93,15 @@ export function LoginForm() {
           disabled={pending || !email || !password}
           className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
         >
-          {pending ? "מתחבר…" : "התחברות"}
+          {pending ? t("submitting") : t("submit")}
         </button>
 
         {error ? <p className="text-sm text-destructive text-center">{error}</p> : null}
 
         <p className="text-sm text-center text-muted-foreground">
-          אין לכם חשבון?{" "}
+          {t("noAccount")}{" "}
           <Link href="/signup" className="underline hover:text-foreground">
-            הירשמו
+            {t("signupLink")}
           </Link>
         </p>
       </form>

@@ -2,13 +2,104 @@
   "Marketing": {
     "hero": {
       "title": "Jointer",
-      "tagline": "קישור אחד לכל מה שאתם עושים. עברית מהיום הראשון, ביט ופייבוקס מובנים.",
+      "tagline": "קישור אחד לכל מה שאתם עושים. ביט ופייבוקס מובנים.",
       "cta": "התחילו"
     },
     "localeSwitcher": {
       "label": "שפה",
       "he": "עברית",
       "en": "English"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "התחברות",
+      "subtitle": "חזרתם! היכנסו עם המייל והסיסמה.",
+      "googleCta": "התחברו עם Google",
+      "or": "או",
+      "emailLabel": "אימייל",
+      "passwordLabel": "סיסמה",
+      "submit": "התחברות",
+      "submitting": "מתחבר…",
+      "invalidCredentials": "פרטי ההתחברות שגויים. נסו שוב.",
+      "noAccount": "אין לכם חשבון?",
+      "signupLink": "הירשמו"
+    },
+    "signup": {
+      "title": "הרשמה",
+      "subtitle": "צרו את החשבון שלכם בכמה שניות.",
+      "googleCta": "הירשמו עם Google",
+      "or": "או",
+      "emailLabel": "אימייל",
+      "nameLabel": "שם",
+      "passwordLabel": "סיסמה (לפחות 6 תווים)",
+      "continue": "המשך",
+      "checking": "בודק…",
+      "createAccount": "צרו חשבון",
+      "creating": "יוצר חשבון…",
+      "haveAccount": "כבר יש לכם חשבון?",
+      "loginLink": "התחברו",
+      "changeEmail": "שינוי כתובת אימייל",
+      "continuingAt": "ממשיכים להרשמה בכתובת <email>{address}</email>",
+      "errors": {
+        "checkFailed": "שגיאה בבדיקת האימייל. נסו שוב.",
+        "alreadyRegistered": "האימייל הזה כבר רשום. נסו להתחבר.",
+        "sendLinkFailed": "נכשל בשליחת הקישור. נסו שוב.",
+        "nameRequired": "חסר שם.",
+        "passwordTooShort": "סיסמה חייבת להיות לפחות 6 תווים.",
+        "signupFailed": "ההרשמה נכשלה. נסו שוב.",
+        "profileCreateFailed": "נכשל ביצירת הפרופיל. צרו קשר עם התמיכה."
+      },
+      "confirmEmail": {
+        "title": "בדקו את האימייל שלכם 📬",
+        "body": "שלחנו אליכם קישור לאימות. אחרי שתאמתו, אתם תועברו אוטומטית להמשך.",
+        "backToLogin": "חזרה להתחברות"
+      },
+      "linkingEmail": {
+        "title": "מצאנו חשבון Google בכתובת הזו 🔗",
+        "body": "שלחנו אליכם קישור התחברות. אחרי שתלחצו עליו, תוכלו להגדיר סיסמה ולהתחבר גם איתה.",
+        "backToLogin": "חזרה להתחברות"
+      }
+    },
+    "setPassword": {
+      "title": "הגדרת סיסמה",
+      "subtitle": "הגדירו סיסמה לחשבון שלכם — תוכלו להתחבר איתה בנוסף ל־Google.",
+      "newPasswordLabel": "סיסמה חדשה (לפחות 6 תווים)",
+      "confirmLabel": "אישור סיסמה",
+      "submit": "שמירת סיסמה",
+      "submitting": "שומר…",
+      "errors": {
+        "passwordTooShort": "סיסמה חייבת להיות לפחות 6 תווים.",
+        "mismatch": "הסיסמאות לא תואמות.",
+        "saveFailed": "שמירת הסיסמה נכשלה. נסו שוב."
+      }
+    }
+  },
+  "Onboarding": {
+    "username": {
+      "title": "בחרו שם משתמש",
+      "subtitle": "זה ה־URL שתשתפו עם העוקבים שלכם.",
+      "label": "שם המשתמש",
+      "submit": "המשך",
+      "submitting": "שומר…",
+      "available": "פנוי ✓",
+      "errors": {
+        "too_short": "קצר מדי (מינימום 3 תווים)",
+        "too_long": "ארוך מדי (מקסימום 30 תווים)",
+        "invalid_chars": "מותר: a–z, 0–9, מקף ומקף תחתון",
+        "leading_or_trailing_separator": "אסור להתחיל או לסיים במקף או מקף תחתון",
+        "reserved": "שם המשתמש שמור",
+        "taken": "שם המשתמש תפוס",
+        "unauthorized": "אין הרשאה. נסו להתחבר מחדש.",
+        "unauthenticated": "צריך להתחבר מחדש",
+        "invalid_input": "קלט לא תקין",
+        "other": "משהו השתבש. נסו שוב.",
+        "checking": "בודק זמינות…"
+      }
+    },
+    "placeholderStep": {
+      "title": "הקליטה — {step}",
+      "body": "השלב הזה ייושם בפרוסה 5."
     }
   }
 }

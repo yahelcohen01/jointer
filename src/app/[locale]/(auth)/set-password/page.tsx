@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { SetPasswordForm } from "./set-password-form";
 
@@ -16,13 +17,13 @@ export default async function SetPasswordPage() {
     redirect("/login");
   }
 
+  const t = await getTranslations("Auth.setPassword");
+
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col items-center gap-1 text-center">
-        <h1 className="text-2xl font-bold font-display">הגדרת סיסמה</h1>
-        <p className="text-sm text-muted-foreground">
-          הגדירו סיסמה לחשבון שלכם — תוכלו להתחבר איתה בנוסף ל־Google.
-        </p>
+        <h1 className="text-2xl font-bold font-display">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
       <SetPasswordForm />
     </div>
