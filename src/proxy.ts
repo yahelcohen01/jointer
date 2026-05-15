@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { updateSupabaseSession } from "@/lib/supabase/proxy";
+import { updateSession } from "@/lib/supabase/proxy";
 
 const APP_HOST_PATTERNS = [
   /^localhost(:\d+)?$/i,
@@ -13,23 +13,12 @@ function isAppHost(host: string): boolean {
   return APP_HOST_PATTERNS.some((pattern) => pattern.test(host));
 }
 
-// Routes that require an authenticated session. Slice 3 = dashboard +
-// onboarding. Future slices may add more.
-const AUTH_REQUIRED_PREFIXES = ["/dashboard", "/onboarding"];
-
-function isAuthRequired(pathname: string): boolean {
-  return AUTH_REQUIRED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
-}
-
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
 
   if (!isAppHost(host)) {
-    // Phase 3 stub: this is where custom-domain lookup will live
+    // Phase 3 stub: custom-domain lookup goes here
     // (find profiles.custom_domain = host, rewrite to /[username]).
-    // For Phase 1, any unknown host 404s.
     return new NextResponse("Not found", { status: 404 });
   }
 
@@ -38,15 +27,7 @@ export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", request.nextUrl.pathname);
 
-  // Refresh the Supabase session (writes refreshed cookies onto response).
-  const { response, user } = await updateSupabaseSession(request, requestHeaders);
-
-  // Gate auth-required routes.
-  if (!user && isAuthRequired(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  return response;
+  return await updateSession(request, requestHeaders);
 }
 
 export const config = {

@@ -1,13 +1,30 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
+import type { Database } from "@/lib/supabase/types";
 
-export async function updateSupabaseSession(request: NextRequest, requestHeaders: Headers) {
-  let response = NextResponse.next({
+const AUTH_REQUIRED_PREFIXES = ["/dashboard", "/onboarding"];
+const PUBLIC_AUTH_ROUTES = ["/login", "/signup"];
+
+function pathStartsWithAny(pathname: string, prefixes: readonly string[]) {
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+/**
+ * Refreshes the Supabase session and applies route gating.
+ *
+ * Mirrors the pattern used elsewhere — getUser() validates the JWT (don't
+ * substitute getSession(); that one trusts the cookie alone). The double
+ * cookie write (request + response) is intentional: request.cookies makes
+ * the refreshed token visible to the rest of this request; response.cookies
+ * persists it back to the browser.
+ */
+export async function updateSession(request: NextRequest, requestHeaders: Headers) {
+  let supabaseResponse = NextResponse.next({
     request: { headers: requestHeaders },
   });
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
@@ -19,23 +36,35 @@ export async function updateSupabaseSession(request: NextRequest, requestHeaders
           for (const { name, value } of cookiesToSet) {
             request.cookies.set(name, value);
           }
-          response = NextResponse.next({
+          supabaseResponse = NextResponse.next({
             request: { headers: requestHeaders },
           });
           for (const { name, value, options } of cookiesToSet) {
-            response.cookies.set(name, value, options);
+            supabaseResponse.cookies.set(name, value, options);
           }
         },
       },
     },
   );
 
-  // IMPORTANT: getUser() validates the JWT with the auth server. Do not replace
-  // with getSession() here — getSession() trusts the cookie alone and can
-  // return stale data after a session is revoked.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return { response, user };
+  const { pathname } = request.nextUrl;
+  const needsAuth = pathStartsWithAny(pathname, AUTH_REQUIRED_PREFIXES);
+  const isAuthPage = pathStartsWithAny(pathname, PUBLIC_AUTH_ROUTES);
+
+  if (!user && needsAuth) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 }
