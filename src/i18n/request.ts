@@ -1,16 +1,10 @@
-import { headers } from "next/headers";
+import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
-import { defaultLocale, isLocale, type Locale } from "@/lib/i18n";
+import { routing } from "@/i18n/routing";
 
-function localeFromPathname(pathname: string): Locale {
-  const segment = pathname.split("/")[1] ?? "";
-  return isLocale(segment) ? segment : defaultLocale;
-}
-
-export default getRequestConfig(async () => {
-  const h = await headers();
-  const pathname = h.get("x-pathname") ?? "/";
-  const locale = localeFromPathname(pathname);
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
 
   return {
     locale,

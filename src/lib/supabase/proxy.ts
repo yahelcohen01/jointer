@@ -5,9 +5,18 @@ import type { Database } from "@/lib/supabase/types";
 
 const AUTH_REQUIRED_PREFIXES = ["/dashboard", "/onboarding"];
 const PUBLIC_AUTH_ROUTES = ["/login", "/signup"];
+const LOCALE_PREFIX_RE = /^\/(he|en)(?=\/|$)/;
+const DEFAULT_LOCALE_FOR_REDIRECT = "en";
 
 function pathStartsWithAny(pathname: string, prefixes: readonly string[]) {
   return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function splitLocale(pathname: string): { locale: string; rest: string } {
+  const match = pathname.match(LOCALE_PREFIX_RE);
+  if (!match) return { locale: DEFAULT_LOCALE_FOR_REDIRECT, rest: pathname };
+  const rest = pathname.slice(match[0].length) || "/";
+  return { locale: match[1], rest };
 }
 
 /**
@@ -52,17 +61,18 @@ export async function updateSession(request: NextRequest, requestHeaders: Header
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const needsAuth = pathStartsWithAny(pathname, AUTH_REQUIRED_PREFIXES);
-  const isAuthPage = pathStartsWithAny(pathname, PUBLIC_AUTH_ROUTES);
+  const { locale, rest } = splitLocale(pathname);
+  const needsAuth = pathStartsWithAny(rest, AUTH_REQUIRED_PREFIXES);
+  const isAuthPage = pathStartsWithAny(rest, PUBLIC_AUTH_ROUTES);
 
   if (!user && needsAuth) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = `/${locale}/login`;
     return NextResponse.redirect(url);
   }
   if (user && isAuthPage) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = `/${locale}/dashboard`;
     return NextResponse.redirect(url);
   }
 

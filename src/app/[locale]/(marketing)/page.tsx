@@ -1,5 +1,5 @@
 import { MarketingHero } from "@/components/marketing/MarketingHero";
 
-export default function HebrewLandingPage() {
+export default function MarketingLandingPage() {
   return <MarketingHero />;
 }

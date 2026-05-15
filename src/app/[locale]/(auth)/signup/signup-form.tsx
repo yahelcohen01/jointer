@@ -7,7 +7,7 @@ import {
   checkSignupAvailability,
   createUserProfile,
   sendPasswordSetupLink,
-} from "@/app/(auth)/actions";
+} from "@/app/[locale]/(auth)/actions";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Stage = "email" | "credentials" | "confirm_email" | "linking_email";
