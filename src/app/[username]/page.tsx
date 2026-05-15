@@ -1,49 +1,65 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
   ProfileView,
   type ProfileViewLink,
   type ProfileViewProfile,
 } from "@/components/profile/ProfileView";
+import { getByUsername } from "@/lib/db/profiles";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-// Phase 1 / Slice 1 — hardcoded profile. Slice 4 will fetch by username from Supabase.
-const HARDCODED_PROFILE: ProfileViewProfile = {
-  username: "yossi",
-  display_name: "יוסי לוי",
-  bio: "מוזיקאי ומפיק. כל הקישורים שלי במקום אחד.",
-  avatar_url: null,
-};
+interface Props {
+  params: Promise<{ username: string }>;
+}
 
-const HARDCODED_LINKS: ProfileViewLink[] = [
-  {
-    id: "1",
-    title: "הסינגל החדש בספוטיפיי",
-    url: "https://open.spotify.com",
-    icon: null,
-  },
-  {
-    id: "2",
-    title: "קליפ ביוטיוב",
-    url: "https://youtube.com",
-    icon: null,
-  },
-  {
-    id: "3",
-    title: "להזמין הופעה",
-    url: "https://example.com/book",
-    icon: null,
-  },
-];
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { username } = await params;
+  const supabase = await createSupabaseServerClient();
+  const profile = await getByUsername(supabase, username);
+  if (!profile) {
+    return { title: "Jointer" };
+  }
+  return {
+    title: `${profile.display_name} | Jointer`,
+    description: profile.bio ?? undefined,
+    openGraph: {
+      title: profile.display_name,
+      description: profile.bio ?? undefined,
+      type: "profile",
+      ...(profile.avatar_url ? { images: [{ url: profile.avatar_url }] } : {}),
+    },
+    twitter: {
+      card: "summary",
+      title: profile.display_name,
+      description: profile.bio ?? undefined,
+    },
+  };
+}
 
-export const metadata: Metadata = {
-  title: `${HARDCODED_PROFILE.display_name} | Jointer`,
-  description: HARDCODED_PROFILE.bio ?? undefined,
-  openGraph: {
-    title: HARDCODED_PROFILE.display_name,
-    description: HARDCODED_PROFILE.bio ?? undefined,
-    type: "profile",
-  },
-};
+export default async function UsernamePage({ params }: Props) {
+  const { username } = await params;
+  const supabase = await createSupabaseServerClient();
+  const profile = await getByUsername(supabase, username);
+  if (!profile) {
+    notFound();
+  }
 
-export default function UsernamePage() {
-  return <ProfileView profile={HARDCODED_PROFILE} links={HARDCODED_LINKS} />;
+  const viewProfile: ProfileViewProfile = {
+    username: profile.username,
+    display_name: profile.display_name,
+    bio: profile.bio,
+    avatar_url: profile.avatar_url,
+  };
+
+  const viewLinks: ProfileViewLink[] = (profile.links ?? [])
+    .filter((link) => link.is_active)
+    .sort((a, b) => a.position - b.position)
+    .map((link) => ({
+      id: link.id,
+      title: link.title,
+      url: link.url,
+      icon: link.icon,
+    }));
+
+  return <ProfileView profile={viewProfile} links={viewLinks} />;
 }
