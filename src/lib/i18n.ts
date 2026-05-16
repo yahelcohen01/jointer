@@ -23,7 +23,10 @@ export const LOCALE_COOKIE = "NEXT_LOCALE";
  * because the user has explicitly listed Hebrew at all (most non-Israeli
  * browsers won't list it).
  */
-export function negotiateLocale(acceptLanguage: string | null, cookieValue: string | undefined): Locale {
+export function negotiateLocale(
+  acceptLanguage: string | null,
+  cookieValue: string | undefined,
+): Locale {
   if (cookieValue && isLocale(cookieValue)) {
     return cookieValue;
   }

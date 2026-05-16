@@ -20,7 +20,8 @@ export async function setLocaleAction(formData: FormData) {
   });
 
   const rawPathname = formData.get("pathname");
-  const pathname = typeof rawPathname === "string" && rawPathname.startsWith("/") ? rawPathname : "/";
+  const pathname =
+    typeof rawPathname === "string" && rawPathname.startsWith("/") ? rawPathname : "/";
   const withoutLocale = pathname.replace(LOCALE_PREFIX_RE, "") || "/";
   const target = withoutLocale === "/" ? `/${locale}` : `/${locale}${withoutLocale}`;
 

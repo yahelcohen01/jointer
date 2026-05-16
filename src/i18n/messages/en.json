@@ -101,6 +101,36 @@
         "unauthenticated": "Please log in again",
         "other": "Something went wrong. Try again."
       }
+    },
+    "links": {
+      "title": "Your links",
+      "subtitle": "Add, edit, and reorder the links visitors see.",
+      "listLabel": "Your links",
+      "empty": "No links yet. Add your first one.",
+      "add": "Add link",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleting": "Deleting…",
+      "cancel": "Cancel",
+      "titleLabel": "Title",
+      "urlLabel": "URL",
+      "urlPlaceholder": "example.com",
+      "iconLabel": "Icon",
+      "iconSearchPlaceholder": "Search icons…",
+      "iconNone": "No icon",
+      "submitCreate": "Add link",
+      "submitEdit": "Save changes",
+      "submitting": "Saving…",
+      "confirmDelete": "Delete this link?",
+      "errors": {
+        "title_required": "Title is required.",
+        "title_too_long": "Title is too long (max 60).",
+        "url_invalid": "Enter a valid URL (http or https).",
+        "url_too_long": "URL is too long.",
+        "unauthenticated": "Please log in again",
+        "not_found": "Link not found.",
+        "other": "Something went wrong. Try again."
+      }
     }
   },
   "Metadata": {

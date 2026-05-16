@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { LinkList } from "@/components/dashboard/LinkList";
 import { ProfileBasicsForm } from "@/components/dashboard/ProfileBasicsForm";
+import * as linksDb from "@/lib/db/links";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -31,7 +33,9 @@ export default async function DashboardPage() {
 
   const t = await getTranslations("Dashboard");
   const tBasics = await getTranslations("Dashboard.profileBasics");
+  const tLinks = await getTranslations("Dashboard.links");
   const initialLanguage: Locale = isLocale(profile.language) ? profile.language : "he";
+  const links = await linksDb.list(supabase, user.id);
 
   return (
     <main className="mx-auto max-w-md flex-1 w-full px-4 py-12 flex flex-col gap-8">
@@ -52,6 +56,14 @@ export default async function DashboardPage() {
           initialBio={profile.bio ?? ""}
           initialLanguage={initialLanguage}
         />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-semibold font-display">{tLinks("title")}</h2>
+          <p className="text-sm text-muted-foreground">{tLinks("subtitle")}</p>
+        </div>
+        <LinkList initialLinks={links} />
       </section>
     </main>
   );

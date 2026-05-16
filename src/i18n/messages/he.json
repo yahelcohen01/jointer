@@ -101,6 +101,36 @@
         "unauthenticated": "צריך להתחבר מחדש",
         "other": "משהו השתבש. נסו שוב."
       }
+    },
+    "links": {
+      "title": "הקישורים שלכם",
+      "subtitle": "הוסיפו, ערכו וסדרו מחדש את הקישורים שהמבקרים רואים.",
+      "listLabel": "הקישורים שלכם",
+      "empty": "עדיין אין קישורים. הוסיפו את הראשון.",
+      "add": "הוספת קישור",
+      "edit": "עריכה",
+      "delete": "מחיקה",
+      "deleting": "מוחק…",
+      "cancel": "ביטול",
+      "titleLabel": "כותרת",
+      "urlLabel": "כתובת",
+      "urlPlaceholder": "example.com",
+      "iconLabel": "אייקון",
+      "iconSearchPlaceholder": "חיפוש אייקונים…",
+      "iconNone": "ללא אייקון",
+      "submitCreate": "הוספה",
+      "submitEdit": "שמירת שינויים",
+      "submitting": "שומר…",
+      "confirmDelete": "למחוק את הקישור?",
+      "errors": {
+        "title_required": "חובה להזין כותרת.",
+        "title_too_long": "כותרת ארוכה מדי (עד 60).",
+        "url_invalid": "הזינו כתובת תקינה (http או https).",
+        "url_too_long": "הכתובת ארוכה מדי.",
+        "unauthenticated": "צריך להתחבר מחדש",
+        "not_found": "הקישור לא נמצא.",
+        "other": "משהו השתבש. נסו שוב."
+      }
     }
   },
   "Metadata": {

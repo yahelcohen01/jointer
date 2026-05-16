@@ -92,11 +92,7 @@ export async function proxy(request: NextRequest) {
   // Bare-username rewrite: `/joe` (single segment, not a locale, not reserved)
   // is served by app/u/[username]/page.tsx. Internal rewrite preserves the
   // short URL in the address bar.
-  if (
-    !hasLocalePrefix(pathname) &&
-    !isReservedRoot(pathname) &&
-    isBareUsernamePath(pathname)
-  ) {
+  if (!hasLocalePrefix(pathname) && !isReservedRoot(pathname) && isBareUsernamePath(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = `/u${pathname}`;
     return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
