@@ -1,5 +1,6 @@
 import { Assistant, Heebo, Inter, Rubik } from "next/font/google";
 import { headers } from "next/headers";
+import { Toaster } from "sonner";
 import { defaultLocale, dirFor, isLocale, type Locale } from "@/lib/i18n";
 import "./globals.css";
 
@@ -48,7 +49,10 @@ export default async function RootLayout({
       data-theme="sunrise"
       className={`${heebo.variable} ${inter.variable} ${rubik.variable} ${assistant.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        {children}
+        <Toaster position="bottom-center" richColors />
+      </body>
     </html>
   );
 }

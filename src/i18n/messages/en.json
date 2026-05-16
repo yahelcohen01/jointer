@@ -122,6 +122,7 @@
       "submitEdit": "Save changes",
       "submitting": "Saving…",
       "confirmDelete": "Delete this link?",
+      "dragHandle": "Drag to reorder",
       "errors": {
         "title_required": "Title is required.",
         "title_too_long": "Title is too long (max 60).",
@@ -129,6 +130,7 @@
         "url_too_long": "URL is too long.",
         "unauthenticated": "Please log in again",
         "not_found": "Link not found.",
+        "invalid_position": "Invalid position.",
         "other": "Something went wrong. Try again."
       }
     }

@@ -1,16 +1,38 @@
 "use client";
 
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { LinkForm } from "@/components/dashboard/LinkForm";
 import { LinkIcon } from "@/components/profile/LinkIcon";
 import { removeLink } from "@/lib/actions/removeLink";
+import { reorderLink } from "@/lib/actions/reorderLink";
 import type { Link } from "@/lib/db/links";
 import type { LinkIcon as LinkIconName } from "@/lib/links";
 
 interface Props {
   initialLinks: Link[];
 }
+
+type Action = { type: "reorder"; oldIndex: number; newIndex: number };
 
 export function LinkList({ initialLinks }: Props) {
   const t = useTranslations("Dashboard.links");
@@ -20,6 +42,18 @@ export function LinkList({ initialLinks }: Props) {
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
+
+  const [links, applyOptimistic] = useOptimistic<Link[], Action>(initialLinks, (state, action) => {
+    if (action.type === "reorder") {
+      return arrayMove(state, action.oldIndex, action.newIndex);
+    }
+    return state;
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const handleDelete = (id: string) => {
     setDeleteError(null);
@@ -34,7 +68,24 @@ export function LinkList({ initialLinks }: Props) {
     });
   };
 
-  if (initialLinks.length === 0 && !adding) {
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = links.findIndex((l) => l.id === active.id);
+    const newIndex = links.findIndex((l) => l.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    startTransition(async () => {
+      applyOptimistic({ type: "reorder", oldIndex, newIndex });
+      const result = await reorderLink(String(active.id), newIndex);
+      if (!result.ok) {
+        toast.error(tErr(result.error));
+      }
+    });
+  };
+
+  if (links.length === 0 && !adding) {
     return (
       <div className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
@@ -51,64 +102,44 @@ export function LinkList({ initialLinks }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <ul className="flex flex-col gap-2" aria-label={t("listLabel")}>
-        {initialLinks.map((link) => {
-          const isEditing = editingId === link.id;
-          if (isEditing) {
-            return (
-              <li key={link.id}>
-                <LinkForm
-                  mode="edit"
-                  linkId={link.id}
-                  initialTitle={link.title}
-                  initialUrl={link.url}
-                  initialIcon={(link.icon as LinkIconName | null) ?? null}
-                  onSuccess={() => setEditingId(null)}
-                  onCancel={() => setEditingId(null)}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={links.map((l) => l.id)} strategy={verticalListSortingStrategy}>
+          <ul className="flex flex-col gap-2" aria-label={t("listLabel")}>
+            {links.map((link) =>
+              editingId === link.id ? (
+                <li key={link.id}>
+                  <LinkForm
+                    mode="edit"
+                    linkId={link.id}
+                    initialTitle={link.title}
+                    initialUrl={link.url}
+                    initialIcon={(link.icon as LinkIconName | null) ?? null}
+                    onSuccess={() => setEditingId(null)}
+                    onCancel={() => setEditingId(null)}
+                  />
+                </li>
+              ) : (
+                <SortableLinkRow
+                  key={link.id}
+                  link={link}
+                  pendingDelete={pendingDelete === link.id}
+                  onEdit={() => {
+                    setAdding(false);
+                    setEditingId(link.id);
+                  }}
+                  onDelete={() => handleDelete(link.id)}
+                  labels={{
+                    edit: t("edit"),
+                    delete: t("delete"),
+                    deleting: t("deleting"),
+                    dragHandle: t("dragHandle"),
+                  }}
                 />
-              </li>
-            );
-          }
-          return (
-            <li
-              key={link.id}
-              className="flex items-center gap-3 rounded-lg border border-border bg-card text-card-foreground px-3 py-2"
-            >
-              <span className="shrink-0 text-muted-foreground" aria-hidden>
-                <LinkIcon name={link.icon} size={18} />
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{link.title}</p>
-                <p
-                  className="text-xs text-muted-foreground truncate"
-                  dir="ltr"
-                  style={{ textAlign: "start" }}
-                >
-                  {link.url}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setAdding(false);
-                  setEditingId(link.id);
-                }}
-                className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                {t("edit")}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(link.id)}
-                disabled={pendingDelete === link.id}
-                className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors disabled:opacity-50"
-              >
-                {pendingDelete === link.id ? t("deleting") : t("delete")}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+              ),
+            )}
+          </ul>
+        </SortableContext>
+      </DndContext>
 
       {deleteError ? <p className="text-sm text-destructive">{deleteError}</p> : null}
 
@@ -131,5 +162,77 @@ export function LinkList({ initialLinks }: Props) {
         </button>
       )}
     </div>
+  );
+}
+
+interface SortableLinkRowProps {
+  link: Link;
+  pendingDelete: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+  labels: {
+    edit: string;
+    delete: string;
+    deleting: string;
+    dragHandle: string;
+  };
+}
+
+function SortableLinkRow({ link, pendingDelete, onEdit, onDelete, labels }: SortableLinkRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: link.id,
+  });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-2 rounded-lg border border-border bg-card text-card-foreground px-3 py-2 touch-none"
+    >
+      <button
+        type="button"
+        aria-label={labels.dragHandle}
+        className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded p-1"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical size={16} aria-hidden />
+      </button>
+      <span className="shrink-0 text-muted-foreground" aria-hidden>
+        <LinkIcon name={link.icon} size={18} />
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium truncate">{link.title}</p>
+        <p
+          className="text-xs text-muted-foreground truncate"
+          dir="ltr"
+          style={{ textAlign: "start" }}
+        >
+          {link.url}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onEdit}
+        className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+      >
+        {labels.edit}
+      </button>
+      <button
+        type="button"
+        onClick={onDelete}
+        disabled={pendingDelete}
+        className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors disabled:opacity-50"
+      >
+        {pendingDelete ? labels.deleting : labels.delete}
+      </button>
+    </li>
   );
 }

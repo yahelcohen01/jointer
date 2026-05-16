@@ -122,6 +122,7 @@
       "submitEdit": "שמירת שינויים",
       "submitting": "שומר…",
       "confirmDelete": "למחוק את הקישור?",
+      "dragHandle": "גררו לסידור מחדש",
       "errors": {
         "title_required": "חובה להזין כותרת.",
         "title_too_long": "כותרת ארוכה מדי (עד 60).",
@@ -129,6 +130,7 @@
         "url_too_long": "הכתובת ארוכה מדי.",
         "unauthenticated": "צריך להתחבר מחדש",
         "not_found": "הקישור לא נמצא.",
+        "invalid_position": "מיקום לא תקין.",
         "other": "משהו השתבש. נסו שוב."
       }
     }

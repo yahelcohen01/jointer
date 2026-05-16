@@ -76,3 +76,22 @@ export async function remove(client: Client, linkId: string): Promise<boolean> {
   const { error } = await client.from("links").delete().eq("id", linkId);
   return !error;
 }
+
+export type ReorderFailure = "not_found" | "unauthorized" | "invalid_position" | "other";
+
+export async function reorder(
+  client: Client,
+  linkId: string,
+  newPosition: number,
+): Promise<{ ok: true } | { ok: false; reason: ReorderFailure }> {
+  const { error } = await client.rpc("reorder_link", {
+    p_link_id: linkId,
+    p_new_position: newPosition,
+  });
+  if (!error) return { ok: true };
+  const msg = error.message ?? "";
+  if (msg.includes("not_found")) return { ok: false, reason: "not_found" };
+  if (msg.includes("unauthorized")) return { ok: false, reason: "unauthorized" };
+  if (msg.includes("invalid_position")) return { ok: false, reason: "invalid_position" };
+  return { ok: false, reason: "other" };
+}

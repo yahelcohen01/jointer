@@ -114,7 +114,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      reorder_link: {
+        Args: { p_link_id: string; p_new_position: number };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;
