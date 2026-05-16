@@ -1,11 +1,17 @@
-import { Assistant, Heebo, Rubik } from "next/font/google";
+import { Assistant, Heebo, Inter, Rubik } from "next/font/google";
 import { headers } from "next/headers";
 import { defaultLocale, dirFor, isLocale, type Locale } from "@/lib/i18n";
 import "./globals.css";
 
 const heebo = Heebo({
-  variable: "--font-sans",
+  variable: "--font-sans-he",
   subsets: ["hebrew", "latin"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-sans-en",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -40,7 +46,7 @@ export default async function RootLayout({
       lang={locale}
       dir={dirFor(locale)}
       data-theme="sunrise"
-      className={`${heebo.variable} ${rubik.variable} ${assistant.variable} h-full antialiased`}
+      className={`${heebo.variable} ${inter.variable} ${rubik.variable} ${assistant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
     </html>

@@ -81,7 +81,27 @@
   },
   "Dashboard": {
     "greeting": "Hello, {name}",
-    "placeholderBody": "The real dashboard ships in slice 4."
+    "profileBasics": {
+      "title": "Your profile",
+      "subtitle": "Edit how visitors see you.",
+      "displayNameLabel": "Display name",
+      "bioLabel": "Bio",
+      "bioHint": "{count} / {max}",
+      "languageLabel": "Page language",
+      "languageHe": "עברית (Hebrew)",
+      "languageEn": "English",
+      "submit": "Save",
+      "submitting": "Saving…",
+      "saved": "Saved ✓",
+      "errors": {
+        "display_name_required": "Display name is required.",
+        "display_name_too_long": "Display name is too long (max 60).",
+        "bio_too_long": "Bio is too long (max 280).",
+        "invalid_language": "Pick a language.",
+        "unauthenticated": "Please log in again",
+        "other": "Something went wrong. Try again."
+      }
+    }
   },
   "Metadata": {
     "title": "Jointer",

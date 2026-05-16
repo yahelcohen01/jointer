@@ -81,7 +81,27 @@
   },
   "Dashboard": {
     "greeting": "שלום, {name}",
-    "placeholderBody": "לוח הבקרה האמיתי בא בפרוסה 4."
+    "profileBasics": {
+      "title": "הפרופיל שלכם",
+      "subtitle": "ערכו איך המבקרים יראו אתכם.",
+      "displayNameLabel": "שם תצוגה",
+      "bioLabel": "ביו",
+      "bioHint": "{count} / {max}",
+      "languageLabel": "שפת הדף",
+      "languageHe": "עברית",
+      "languageEn": "English (אנגלית)",
+      "submit": "שמירה",
+      "submitting": "שומר…",
+      "saved": "נשמר ✓",
+      "errors": {
+        "display_name_required": "חובה להזין שם תצוגה.",
+        "display_name_too_long": "שם תצוגה ארוך מדי (עד 60).",
+        "bio_too_long": "הביו ארוך מדי (עד 280).",
+        "invalid_language": "בחרו שפה.",
+        "unauthenticated": "צריך להתחבר מחדש",
+        "other": "משהו השתבש. נסו שוב."
+      }
+    }
   },
   "Metadata": {
     "title": "Jointer",

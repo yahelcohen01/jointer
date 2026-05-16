@@ -6,6 +6,7 @@ import {
   type ProfileViewProfile,
 } from "@/components/profile/ProfileView";
 import { getByUsername } from "@/lib/db/profiles";
+import { dirFor, isLocale } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getTheme } from "@/lib/themes";
 
@@ -63,11 +64,14 @@ export default async function UsernamePage({ params }: Props) {
     }));
 
   const theme = getTheme(profile.theme_id);
+  const language = isLocale(profile.language) ? profile.language : "he";
 
   return (
     <div
       data-theme={theme.id}
-      className="min-h-full flex-1 flex flex-col bg-background text-foreground"
+      lang={language}
+      dir={dirFor(language)}
+      className="min-h-full flex-1 flex flex-col bg-background text-foreground font-sans"
     >
       <ProfileView profile={viewProfile} links={viewLinks} />
     </div>

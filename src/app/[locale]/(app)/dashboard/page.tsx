@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ProfileBasicsForm } from "@/components/dashboard/ProfileBasicsForm";
+import { isLocale, type Locale } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -15,7 +17,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, username, onboarded_at")
+    .select("display_name, username, bio, language, onboarded_at")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -28,14 +30,29 @@ export default async function DashboardPage() {
   }
 
   const t = await getTranslations("Dashboard");
+  const tBasics = await getTranslations("Dashboard.profileBasics");
+  const initialLanguage: Locale = isLocale(profile.language) ? profile.language : "he";
 
   return (
-    <main className="mx-auto max-w-md flex-1 px-4 py-16 flex flex-col items-center text-center gap-3">
-      <h1 className="text-3xl font-bold font-display">
-        {t("greeting", { name: profile.display_name })}
-      </h1>
-      <p className="text-muted-foreground">@{profile.username}</p>
-      <p className="text-sm text-muted-foreground">{t("placeholderBody")}</p>
+    <main className="mx-auto max-w-md flex-1 w-full px-4 py-12 flex flex-col gap-8">
+      <header className="flex flex-col items-center gap-1 text-center">
+        <h1 className="text-3xl font-bold font-display">
+          {t("greeting", { name: profile.display_name })}
+        </h1>
+        <p className="text-muted-foreground">@{profile.username}</p>
+      </header>
+
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-semibold font-display">{tBasics("title")}</h2>
+          <p className="text-sm text-muted-foreground">{tBasics("subtitle")}</p>
+        </div>
+        <ProfileBasicsForm
+          initialDisplayName={profile.display_name}
+          initialBio={profile.bio ?? ""}
+          initialLanguage={initialLanguage}
+        />
+      </section>
     </main>
   );
 }

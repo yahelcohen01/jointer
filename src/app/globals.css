@@ -50,6 +50,9 @@
 }
 
 :root {
+  /* Default to Hebrew sans. Override per-locale via the [lang] selectors
+     below so both html-level and nested per-profile lang switches work. */
+  --font-sans: var(--font-sans-he);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -183,6 +186,14 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+[lang="he"] {
+  --font-sans: var(--font-sans-he);
+}
+
+[lang="en"] {
+  --font-sans: var(--font-sans-en);
 }
 
 @layer base {
