@@ -102,6 +102,12 @@
         "other": "Something went wrong. Try again."
       }
     },
+    "preview": {
+      "title": "Preview",
+      "show": "Show preview",
+      "hide": "Hide preview",
+      "mobileHint": "This is how visitors will see your page."
+    },
     "links": {
       "title": "Your links",
       "subtitle": "Add, edit, and reorder the links visitors see.",

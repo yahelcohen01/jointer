@@ -19,7 +19,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useOptimistic, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { LinkForm } from "@/components/dashboard/LinkForm";
 import { LinkIcon } from "@/components/profile/LinkIcon";
@@ -32,13 +32,14 @@ import type { LinkIcon as LinkIconName } from "@/lib/links";
 
 interface Props {
   initialLinks: Link[];
+  onLinksChange?: (links: Link[]) => void;
 }
 
 type Action =
   | { type: "reorder"; oldIndex: number; newIndex: number }
   | { type: "toggle-active"; id: string; isActive: boolean };
 
-export function LinkList({ initialLinks }: Props) {
+export function LinkList({ initialLinks, onLinksChange }: Props) {
   const t = useTranslations("Dashboard.links");
   const tErr = useTranslations("Dashboard.links.errors");
   const [adding, setAdding] = useState(false);
@@ -56,6 +57,10 @@ export function LinkList({ initialLinks }: Props) {
     }
     return state;
   });
+
+  useEffect(() => {
+    onLinksChange?.(links);
+  }, [links, onLinksChange]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),

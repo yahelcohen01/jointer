@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { updateProfileBasics } from "@/lib/actions/updateProfileBasics";
 import type { Locale } from "@/lib/i18n";
@@ -18,6 +18,7 @@ interface Props {
   initialDisplayName: string;
   initialBio: string;
   initialLanguage: Locale;
+  onDraftChange?: (draft: { display_name: string; bio: string; language: Locale }) => void;
 }
 
 interface FormValues {
@@ -26,7 +27,12 @@ interface FormValues {
   language: Locale;
 }
 
-export function ProfileBasicsForm({ initialDisplayName, initialBio, initialLanguage }: Props) {
+export function ProfileBasicsForm({
+  initialDisplayName,
+  initialBio,
+  initialLanguage,
+  onDraftChange,
+}: Props) {
   const t = useTranslations("Dashboard.profileBasics");
   const tErr = useTranslations("Dashboard.profileBasics.errors");
   const [serverError, setServerError] = useState<string | null>(null);
@@ -50,6 +56,18 @@ export function ProfileBasicsForm({ initialDisplayName, initialBio, initialLangu
   });
 
   const bioValue = watch("bio") ?? "";
+
+  useEffect(() => {
+    if (!onDraftChange) return;
+    const sub = watch((value) => {
+      onDraftChange({
+        display_name: value.display_name ?? "",
+        bio: value.bio ?? "",
+        language: (value.language ?? initialLanguage) as Locale,
+      });
+    });
+    return () => sub.unsubscribe();
+  }, [watch, onDraftChange, initialLanguage]);
 
   const onSubmit = handleSubmit((values) => {
     setServerError(null);
