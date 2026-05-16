@@ -2,17 +2,19 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
 import { LinkList } from "@/components/dashboard/LinkList";
 import { LivePreview, type PreviewProfile } from "@/components/dashboard/LivePreview";
 import { ProfileBasicsForm } from "@/components/dashboard/ProfileBasicsForm";
 import type { Link } from "@/lib/db/links";
 
 interface Props {
+  userId: string;
   initialProfile: PreviewProfile;
   initialLinks: Link[];
 }
 
-export function DashboardEditor({ initialProfile, initialLinks }: Props) {
+export function DashboardEditor({ userId, initialProfile, initialLinks }: Props) {
   const tBasics = useTranslations("Dashboard.profileBasics");
   const tLinks = useTranslations("Dashboard.links");
 
@@ -27,6 +29,12 @@ export function DashboardEditor({ initialProfile, initialLinks }: Props) {
             <h2 className="text-xl font-semibold font-display">{tBasics("title")}</h2>
             <p className="text-sm text-muted-foreground">{tBasics("subtitle")}</p>
           </div>
+          <AvatarUpload
+            userId={userId}
+            displayName={draftProfile.display_name || initialProfile.display_name}
+            initialAvatarUrl={initialProfile.avatar_url}
+            onAvatarChange={(url) => setDraftProfile((p) => ({ ...p, avatar_url: url }))}
+          />
           <ProfileBasicsForm
             initialDisplayName={initialProfile.display_name}
             initialBio={initialProfile.bio}

@@ -81,6 +81,22 @@
   },
   "Dashboard": {
     "greeting": "Hello, {name}",
+    "avatar": {
+      "upload": "Upload photo",
+      "replace": "Replace photo",
+      "remove": "Remove",
+      "uploading": "Uploading…",
+      "uploaded": "Photo updated ✓",
+      "hint": "PNG, JPG, WebP or GIF — up to 2 MB.",
+      "errors": {
+        "invalid_type": "Unsupported file type. Use PNG, JPG, WebP or GIF.",
+        "too_large": "File is too large. Max 2 MB.",
+        "upload_failed": "Upload failed. Try again.",
+        "invalid_url": "Invalid avatar URL.",
+        "unauthenticated": "Please log in again.",
+        "other": "Something went wrong. Try again."
+      }
+    },
     "profileBasics": {
       "title": "Your profile",
       "subtitle": "Edit how visitors see you.",

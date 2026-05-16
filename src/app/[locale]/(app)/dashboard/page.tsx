@@ -52,7 +52,7 @@ export default async function DashboardPage() {
         <p className="text-muted-foreground">@{profile.username}</p>
       </header>
 
-      <DashboardEditor initialProfile={initialProfile} initialLinks={links} />
+      <DashboardEditor userId={user.id} initialProfile={initialProfile} initialLinks={links} />
     </main>
   );
 }

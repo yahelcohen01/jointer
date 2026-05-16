@@ -81,6 +81,22 @@
   },
   "Dashboard": {
     "greeting": "שלום, {name}",
+    "avatar": {
+      "upload": "העלאת תמונה",
+      "replace": "החלפת תמונה",
+      "remove": "הסרה",
+      "uploading": "מעלה…",
+      "uploaded": "התמונה עודכנה ✓",
+      "hint": "PNG, JPG, WebP או GIF — עד 2MB.",
+      "errors": {
+        "invalid_type": "סוג קובץ לא נתמך. השתמשו ב־PNG, JPG, WebP או GIF.",
+        "too_large": "הקובץ גדול מדי. מקסימום 2MB.",
+        "upload_failed": "ההעלאה נכשלה. נסו שוב.",
+        "invalid_url": "כתובת תמונה לא תקינה.",
+        "unauthenticated": "צריך להתחבר מחדש.",
+        "other": "משהו השתבש. נסו שוב."
+      }
+    },
     "profileBasics": {
       "title": "הפרופיל שלכם",
       "subtitle": "ערכו איך המבקרים יראו אתכם.",
