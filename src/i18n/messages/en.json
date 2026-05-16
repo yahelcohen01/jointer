@@ -123,6 +123,9 @@
       "submitting": "Saving…",
       "confirmDelete": "Delete this link?",
       "dragHandle": "Drag to reorder",
+      "activate": "Show on profile",
+      "deactivate": "Hide from profile",
+      "inactiveBadge": "Hidden",
       "errors": {
         "title_required": "Title is required.",
         "title_too_long": "Title is too long (max 60).",

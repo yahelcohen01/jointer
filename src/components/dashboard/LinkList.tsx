@@ -23,8 +23,10 @@ import { useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { LinkForm } from "@/components/dashboard/LinkForm";
 import { LinkIcon } from "@/components/profile/LinkIcon";
+import { Switch } from "@/components/ui/switch";
 import { removeLink } from "@/lib/actions/removeLink";
 import { reorderLink } from "@/lib/actions/reorderLink";
+import { setLinkActive } from "@/lib/actions/setLinkActive";
 import type { Link } from "@/lib/db/links";
 import type { LinkIcon as LinkIconName } from "@/lib/links";
 
@@ -32,7 +34,9 @@ interface Props {
   initialLinks: Link[];
 }
 
-type Action = { type: "reorder"; oldIndex: number; newIndex: number };
+type Action =
+  | { type: "reorder"; oldIndex: number; newIndex: number }
+  | { type: "toggle-active"; id: string; isActive: boolean };
 
 export function LinkList({ initialLinks }: Props) {
   const t = useTranslations("Dashboard.links");
@@ -46,6 +50,9 @@ export function LinkList({ initialLinks }: Props) {
   const [links, applyOptimistic] = useOptimistic<Link[], Action>(initialLinks, (state, action) => {
     if (action.type === "reorder") {
       return arrayMove(state, action.oldIndex, action.newIndex);
+    }
+    if (action.type === "toggle-active") {
+      return state.map((l) => (l.id === action.id ? { ...l, is_active: action.isActive } : l));
     }
     return state;
   });
@@ -64,6 +71,16 @@ export function LinkList({ initialLinks }: Props) {
       setPendingDelete(null);
       if (!result.ok) {
         setDeleteError(tErr(result.error));
+      }
+    });
+  };
+
+  const handleToggleActive = (id: string, isActive: boolean) => {
+    startTransition(async () => {
+      applyOptimistic({ type: "toggle-active", id, isActive });
+      const result = await setLinkActive(id, isActive);
+      if (!result.ok) {
+        toast.error(tErr(result.error));
       }
     });
   };
@@ -128,11 +145,15 @@ export function LinkList({ initialLinks }: Props) {
                     setEditingId(link.id);
                   }}
                   onDelete={() => handleDelete(link.id)}
+                  onToggleActive={(checked) => handleToggleActive(link.id, checked)}
                   labels={{
                     edit: t("edit"),
                     delete: t("delete"),
                     deleting: t("deleting"),
                     dragHandle: t("dragHandle"),
+                    activate: t("activate"),
+                    deactivate: t("deactivate"),
+                    inactiveBadge: t("inactiveBadge"),
                   }}
                 />
               ),
@@ -170,15 +191,26 @@ interface SortableLinkRowProps {
   pendingDelete: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  onToggleActive: (checked: boolean) => void;
   labels: {
     edit: string;
     delete: string;
     deleting: string;
     dragHandle: string;
+    activate: string;
+    deactivate: string;
+    inactiveBadge: string;
   };
 }
 
-function SortableLinkRow({ link, pendingDelete, onEdit, onDelete, labels }: SortableLinkRowProps) {
+function SortableLinkRow({
+  link,
+  pendingDelete,
+  onEdit,
+  onDelete,
+  onToggleActive,
+  labels,
+}: SortableLinkRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: link.id,
   });
@@ -194,7 +226,8 @@ function SortableLinkRow({ link, pendingDelete, onEdit, onDelete, labels }: Sort
     <li
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-2 rounded-lg border border-border bg-card text-card-foreground px-3 py-2 touch-none"
+      data-active={link.is_active}
+      className="flex items-center gap-2 rounded-lg border border-border bg-card text-card-foreground px-3 py-2 touch-none data-[active=false]:opacity-60 data-[active=false]:border-dashed"
     >
       <button
         type="button"
@@ -209,7 +242,14 @@ function SortableLinkRow({ link, pendingDelete, onEdit, onDelete, labels }: Sort
         <LinkIcon name={link.icon} size={18} />
       </span>
       <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{link.title}</p>
+        <div className="flex items-center gap-2">
+          <p className="font-medium truncate">{link.title}</p>
+          {!link.is_active ? (
+            <span className="shrink-0 rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-[10px] uppercase tracking-wide">
+              {labels.inactiveBadge}
+            </span>
+          ) : null}
+        </div>
         <p
           className="text-xs text-muted-foreground truncate"
           dir="ltr"
@@ -218,6 +258,12 @@ function SortableLinkRow({ link, pendingDelete, onEdit, onDelete, labels }: Sort
           {link.url}
         </p>
       </div>
+      <Switch
+        checked={link.is_active}
+        onCheckedChange={onToggleActive}
+        aria-label={link.is_active ? labels.deactivate : labels.activate}
+        className="shrink-0"
+      />
       <button
         type="button"
         onClick={onEdit}

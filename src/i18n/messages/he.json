@@ -123,6 +123,9 @@
       "submitting": "שומר…",
       "confirmDelete": "למחוק את הקישור?",
       "dragHandle": "גררו לסידור מחדש",
+      "activate": "הצגה בפרופיל",
+      "deactivate": "הסתרה מהפרופיל",
+      "inactiveBadge": "מוסתר",
       "errors": {
         "title_required": "חובה להזין כותרת.",
         "title_too_long": "כותרת ארוכה מדי (עד 60).",
